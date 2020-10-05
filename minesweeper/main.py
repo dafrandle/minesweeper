@@ -1,26 +1,35 @@
-from tkinter import *
+import tkinter as tk
 
-root = Tk()
+# root = tk.Tk()
+# root.resizable(0, 0)
+# root.geometry('800x800')
+#
+# frameGridBase = tk.Frame(root,height = 20,width = 20, highlightbackground = "black", highlightthickness = 1)
+# frameGridBase.grid()
+#
+#
+#
+# root.mainloop()
 
-frame = Frame(root)
-frame.pack()
 
-bottomframe = Frame(root)
-bottomframe.pack( side = BOTTOM )
 
-redbutton = Button(frame, text="Red", fg="red")
-redbutton.pack( side = LEFT)
 
-greenbutton = Button(frame, text="Brown", fg="brown")
-greenbutton.pack( side = LEFT )
+class gridButtons():
+    def __init__(self,rowPosition, colPosition,masterFrame):
+        self.rowPosition = rowPosition
+        self.colPosition = colPosition
 
-bluebutton = Button(frame, text="Blue", fg="blue")
-bluebutton.pack( side = LEFT )
+        self.button = tk.Button(masterFrame,width=2,height=1)
+        self.button.grid(row = self.rowPosition,column = self.colPosition,padx=0, pady=0)
 
-blackbutton = Button(bottomframe, text="Black", fg="black")
-blackbutton.pack( side = BOTTOM)
+root = tk.Tk()
+buttonFrame = tk.Frame(root)
+buttonFrame.pack()
+root.title("minesweeper")
 
+buttonList = []
+for r in range(10):
+    for c in range(10):
+        buttonToCreate = gridButtons(r,c,buttonFrame)
+        buttonList.append(buttonToCreate)
 root.mainloop()
-
-#test comment
-#test comment 2
