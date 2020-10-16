@@ -116,8 +116,8 @@ def returnToMainMenu(gameWindow,scoreWindow):
 # ------------------------------------------------------ Other Functions -------------------------------------------
 
 def CenterWindow(width, length):
-    screenWidth = root.winfo_screenmmwidth() * 3.7  # may not work right on other computers
-    screenLength = root.winfo_screenmmheight() * 3.7
+    screenWidth = root.winfo_screenwidth()
+    screenLength = root.winfo_screenheight()
 
     screenX = int((screenWidth / 2) - (width / 2))
     screenY = int((screenLength / 2) - (length / 2))
