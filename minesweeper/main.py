@@ -4,6 +4,7 @@ import random
 
 
 class cellFrame():  # --------------------------------------- this is each cell that holds a button ------------------------------------------
+    isBomb = False
     def __init__(self, rowPosition, colPosition, masterFrame, window):
         self.window = window
         self.rowPosition = rowPosition
@@ -17,31 +18,48 @@ class cellFrame():  # --------------------------------------- this is each cell 
     def bomb(self):
         button = tk.Button(self.frame, text="*", width=2, height=1, command=lambda: lose(self.window))
         button.grid(padx=1, pady=1)
+        self.isBomb = True
 
-    def adjacentToBomb(self, numberOfBombs):
+    def adjacentToBomb(self,numberOfBombs):
         button = tk.Button(self.frame, text=numberOfBombs, width=2, height=1, command=lambda: self.hideButton(button))
         button.grid(padx=0, pady=0)
 
     def empty(self):
-        button = tk.Button(self.frame, text=" ", width=2, height=1, command=lambda: self.hideButton(button))
+        button = tk.Button(self.frame, text="", width=2, height=1, command=lambda: self.hideButton(button))
         button.grid(padx=0, pady=0)
 
+    def getBombStatus(self):
+        return self.isBomb
 
 # --------------------------------------------------------- Game Window -------------------------------------------------------------------
 
-def createGameWindow(rowX, columnY):
+def createGameWindow(rowX, columnY,numberOfBombs):
     gameWindow = tk.Tk()
     gridFrame = tk.Frame(gameWindow,pady=int(rowX*.5))
     gridFrame.pack()
     gameWindow.title("minesweeper")
 
+    # ------------- create list of cells
     buttonList = []
     for row in range(rowX):
         for column in range(columnY):
             frameToCreate = cellFrame(row, column, gridFrame, gameWindow)
             buttonList.append(frameToCreate)
 
-    bombListSize = 10
+    # ----------- find edge cells
+    leftColumn = []
+    rightColumn = []
+    topRow = []
+    bottomRow = []
+    for i in range(rowX):
+        leftColumn.append(i*rowX) # left column
+        rightColumn.append(i*rowX+rowX-1) # right column
+        topRow.append(i) # top row
+        bottomRow.append((rowX*columnY-1)-i) # bottom row
+
+
+    # ------------- bomb cell list
+    bombListSize = numberOfBombs
     bombList = []
     i = 0
     while i < bombListSize:
@@ -55,12 +73,57 @@ def createGameWindow(rowX, columnY):
     for t in bombList:
         buttonList[t].bomb()
 
+    # -------------- create list adjacent cells
+    adjacentCells = []
+    for cell in buttonList:
+        cellIndex = buttonList.index(cell)
+        checkList = []
+        top = True
+        bottom = True
+        left = True
+        right = True
+        adjBombs = 0
+        if cell.isBomb:
+            continue
+        else:
+            if cellIndex not in leftColumn: # check left of cell
+                checkList.append(cellIndex - 1)
+                left = False
+            if cellIndex not in rightColumn: # check right of cell
+                checkList.append(cellIndex + 1)
+                right = False
+            if cellIndex not in topRow: # check above cell
+                checkList.append(cellIndex - rowX)
+                top = False
+            if cellIndex not in bottomRow: # check below cell
+                checkList.append(cellIndex + rowX)
+                bottom = False
+            if not top and not left: # top left cell
+                checkList.append(cellIndex - rowX - 1)
+            if not top and not right: # top right cell
+                checkList.append(cellIndex - rowX + 1)
+            if not bottom and not left: # bottom left cell
+                checkList.append(cellIndex + rowX - 1)
+            if not bottom and not right: # bottom left cell
+                checkList.append(cellIndex + rowX + 1)
+        for x in checkList:
+            if buttonList[x].isBomb:
+                adjBombs = 1 + adjBombs
+        if adjBombs > 0:
+            adjacentCells.append(cellIndex)
+            buttonList[cellIndex].adjacentToBomb(adjBombs)
+
+    # -------------- normal cell list
     for x in buttonList:
         tile = buttonList.index(x)
         if tile in bombList:
             continue
+        if tile in adjacentCells:
+            continue
         else:
             x.empty()
+
+    # --- draw game window
     root.withdraw()
     gameWindow.resizable(0, 0)
     gameWindow.geometry(CenterWindow(columnY*30,rowX*30))
@@ -130,7 +193,7 @@ def CenterWindow(width, length):
 
 # --------------------------------------------------------- Root window ------------------------------------------------
 root = tk.Tk()
-newGameButton = tk.Button(text="New game", command=lambda: createGameWindow(15, 15))
+newGameButton = tk.Button(text="New game", command=lambda: createGameWindow(15, 15 , 40))
 newGameButton.pack()
 
 # screen size - center widows
