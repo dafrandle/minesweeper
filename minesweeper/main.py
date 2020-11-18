@@ -5,26 +5,26 @@ gameOpen = None
 
 class cellFrame():  # --------------------------------------- this is each cell that holds a button ------------------------------------------
     def __init__(self, rowPosition, colPosition, masterFrame, window, edgeDict, columnY, bombCount):
-        self.window = window
-        self.rowPosition = rowPosition
-        self.colPosition = colPosition
-        self.edgeDict = edgeDict
-        self.columnY = columnY
-        self.bombCount = bombCount
-        self.frame = tk.Frame(masterFrame, width=26, height=26, highlightbackground="gray", highlightthickness=1, bg="dark grey")
-        self.frame.grid(row=self.rowPosition, column=self.colPosition, padx=0, pady=0)
-        self.frame.grid_propagate(0)
-        self.button = tk.Button(self.frame, text="", width=2, height=1)
-        self.button.grid(padx=0, pady=0)
+        self.__window = window
+        self.__rowPosition = rowPosition
+        self.__colPosition = colPosition
+        self.__edgeDict = edgeDict
+        self.__columnY = columnY
+        self.__bombCount = bombCount
+        self.__frame = tk.Frame(masterFrame, width=26, height=26, highlightbackground="gray", highlightthickness=1, bg="dark grey")
+        self.__frame.grid(row=self.rowPosition, column=self.colPosition, padx=0, pady=0)
+        self.__frame.grid_propagate(0)
+        self.__button = tk.Button(self.frame, text="", width=2, height=1)
+        self.__button.grid(padx=0, pady=0)
 
-    isBomb = False
-    adjacentBombs = 0
-    revealed = False
-    lost = False
+    __isBomb = False
+    __adjacentBombs = 0
+    __revealed = False
+    __lost = False
     # these below are empty because the information they represent can't be passed when the object is created because it isn't in memory yet
     # these values must be set accurately or the program will act strangely, if not crashing outright
-    thisCellIndex = None
-    buttonList = []
+    __thisCellIndex = None
+    __buttonList = []
 
     # set the button type
     def bomb(self):
