@@ -28,36 +28,36 @@ class cellFrame():  # --------------------------------------- this is each cell 
 
     # set the button type
     def bomb(self):
-        self.__button.configure(command=lambda: end(self.__window, self.buttonList,False))
-        self.isBomb = True
+        self.__button.configure(command=lambda: end(self.__window, self.__buttonList,False))
+        self.__isBomb = True
 
     def empty(self):
         self.__button.configure(command=lambda: self.showArea())
 
     def show(self):
         self.__button.grid_forget()
-        self.revealed = True
-        if self.isBomb:
+        self.__revealed = True
+        if self.__isBomb:
             label = tk.Label(self.__frame, text="*", bg="red", highlightbackground="grey", highlightthickness=1)
             self.__frame.configure(bg="red")
             label.grid(padx=0, pady=0)
-        elif self.adjacentBombs > 0:
-            label = tk.Label(self.__frame, text=self.adjacentBombs,bg="dark grey", highlightbackground="grey", highlightthickness=1)
+        elif self.__adjacentBombs > 0:
+            label = tk.Label(self.__frame, text=self.__adjacentBombs,bg="dark grey", highlightbackground="grey", highlightthickness=1)
             label.grid(padx=0, pady=0)
 
     def showArea(self):
-        if self.adjacentBombs > 0:  # if the cell is adjacent to bomb it only reveals itself
+        if self.__adjacentBombs > 0:  # if the cell is adjacent to bomb it only reveals itself
             self.show()
         else:
-            showlist = [self.thisCellIndex]  # get cells immediately adjacent to THIS cell + itself and puts it in a list
-            for cell in adjacentCellList(self.thisCellIndex, self.__edgeDict, self.__columnY):
-                if not self.buttonList[cell].getBombStatus() and self.buttonList[cell].getAdjacentBombs() == 0:
+            showlist = [self.__thisCellIndex]  # get cells immediately adjacent to THIS cell + itself and puts it in a list
+            for cell in adjacentCellList(self.__thisCellIndex, self.__edgeDict, self.__columnY):
+                if not self.__buttonList[cell].getBombStatus() and self.__buttonList[cell].getAdjacentBombs() == 0:
                     showlist.append(cell)
 
             for cell in showlist: # get adjacent cells that are not bombs nor adjacent to them and adds them to the list
                 addList = []
-                for addCell in adjacentCellList(self.buttonList[cell].getIndex(), self.__edgeDict, self.__columnY):
-                    if not self.buttonList[addCell].getBombStatus() and self.buttonList[addCell].getAdjacentBombs() == 0:
+                for addCell in adjacentCellList(self.__buttonList[cell].getIndex(), self.__edgeDict, self.__columnY):
+                    if not self.__buttonList[addCell].getBombStatus() and self.__buttonList[addCell].getAdjacentBombs() == 0:
                         addList.append(addCell)
                 for i in addList:
                     if i not in showlist:  # because this is done while in a loop, the appended numbers will also be checked
@@ -65,56 +65,56 @@ class cellFrame():  # --------------------------------------- this is each cell 
 
             addAdjCell = []
             for cell in showlist: # get adjacent cells that are not bombs BUT ARE adjacent to them and adds them to a new list
-                for addCell in adjacentCellList(self.buttonList[cell].getIndex(), self.__edgeDict, self.__columnY):
-                    if not self.buttonList[addCell].getBombStatus():
+                for addCell in adjacentCellList(self.__buttonList[cell].getIndex(), self.__edgeDict, self.__columnY):
+                    if not self.__buttonList[addCell].getBombStatus():
                         if addCell not in showlist:
                             addAdjCell.append(addCell) # a new lits is used to prevent the program from checking added cells
             showlist = showlist + addAdjCell
 
             for cell in showlist: # for each cell run it's show function
-                self.buttonList[cell].show()
+                self.__buttonList[cell].show()
 
         revealedCount = 0  # if all non-bomb are shown, win the game
-        for cell in self.buttonList:
+        for cell in self.__buttonList:
             if cell.getRevealed():
                 revealedCount = revealedCount + 1
-        if revealedCount == len(self.buttonList) - self.__bombCount:
-            end(self.__window, self.buttonList, True)
+        if revealedCount == len(self.__buttonList) - self.__bombCount:
+            end(self.__window, self.__buttonList, True)
 
 
     # set
 
     def setAdjacentBombs(self,number):
-        self.adjacentBombs = number
+        self.__adjacentBombs = number
 
     def setThisCellIndex(self,number):
-        self.thisCellIndex = number
+        self.__thisCellIndex = number
 
     def setButtonList(self,list):
-        self.buttonList = list
+        self.__buttonList = list
 
     def setCellCount(self,number):
-        self.cellCount = number
+        self.__cellCount = number
 
     # get
 
     def getBombStatus(self):
-        return self.isBomb
+        return self.__isBomb
 
     def getButton(self):
         return self.__button
 
     def getIndex(self):
-        return self.thisCellIndex
+        return self.__thisCellIndex
 
     def getAdjacentBombs(self):
-        return  self.adjacentBombs
+        return  self.__adjacentBombs
 
     def getCellFrame(self):
         return self.__frame
 
     def getRevealed(self):
-        return self.revealed
+        return self.__revealed
 
 # --------------------------------------------------------- Game Window -------------------------------------------------------------------
 
@@ -188,12 +188,12 @@ def createGameWindow(rowX, columnY,numberOfBombs):
         cellIndex = buttonList.index(cell)
         checkList = []
         adjBombs = 0
-        if cell.isBomb:
+        if cell.getBombStatus():
             continue
         else:
             checkList = adjacentCellList(cellIndex,edgeDict,columnY)
         for x in checkList:
-            if buttonList[x].isBomb:
+            if buttonList[x].getBombStatus():
                 adjBombs = 1 + adjBombs
         if adjBombs > 0:
             adjacentCells.append(cellIndex)
