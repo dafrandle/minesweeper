@@ -12,9 +12,9 @@ class cellFrame():  # --------------------------------------- this is each cell 
         self.__columnY = columnY
         self.__bombCount = bombCount
         self.__frame = tk.Frame(masterFrame, width=26, height=26, highlightbackground="gray", highlightthickness=1, bg="dark grey")
-        self.__frame.grid(row=self.rowPosition, column=self.colPosition, padx=0, pady=0)
+        self.__frame.grid(row=self.__rowPosition, column=self.__colPosition, padx=0, pady=0)
         self.__frame.grid_propagate(0)
-        self.__button = tk.Button(self.frame, text="", width=2, height=1)
+        self.__button = tk.Button(self.__frame, text="", width=2, height=1)
         self.__button.grid(padx=0, pady=0)
 
     __isBomb = False
@@ -28,21 +28,21 @@ class cellFrame():  # --------------------------------------- this is each cell 
 
     # set the button type
     def bomb(self):
-        self.button.configure(command=lambda: end(self.window, self.buttonList,False))
+        self.__button.configure(command=lambda: end(self.__window, self.buttonList,False))
         self.isBomb = True
 
     def empty(self):
-        self.button.configure(command=lambda: self.showArea())
+        self.__button.configure(command=lambda: self.showArea())
 
     def show(self):
-        self.button.grid_forget()
+        self.__button.grid_forget()
         self.revealed = True
         if self.isBomb:
-            label = tk.Label(self.frame, text="*", bg="red", highlightbackground="grey", highlightthickness=1)
-            self.frame.configure(bg="red")
+            label = tk.Label(self.__frame, text="*", bg="red", highlightbackground="grey", highlightthickness=1)
+            self.__frame.configure(bg="red")
             label.grid(padx=0, pady=0)
         elif self.adjacentBombs > 0:
-            label = tk.Label(self.frame, text=self.adjacentBombs,bg="dark grey", highlightbackground="grey", highlightthickness=1)
+            label = tk.Label(self.__frame, text=self.adjacentBombs,bg="dark grey", highlightbackground="grey", highlightthickness=1)
             label.grid(padx=0, pady=0)
 
     def showArea(self):
@@ -50,13 +50,13 @@ class cellFrame():  # --------------------------------------- this is each cell 
             self.show()
         else:
             showlist = [self.thisCellIndex]  # get cells immediately adjacent to THIS cell + itself and puts it in a list
-            for cell in adjacentCellList(self.thisCellIndex, self.edgeDict, self.columnY):
+            for cell in adjacentCellList(self.thisCellIndex, self.__edgeDict, self.__columnY):
                 if not self.buttonList[cell].getBombStatus() and self.buttonList[cell].getAdjacentBombs() == 0:
                     showlist.append(cell)
 
             for cell in showlist: # get adjacent cells that are not bombs nor adjacent to them and adds them to the list
                 addList = []
-                for addCell in adjacentCellList(self.buttonList[cell].getIndex(), self.edgeDict, self.columnY):
+                for addCell in adjacentCellList(self.buttonList[cell].getIndex(), self.__edgeDict, self.__columnY):
                     if not self.buttonList[addCell].getBombStatus() and self.buttonList[addCell].getAdjacentBombs() == 0:
                         addList.append(addCell)
                 for i in addList:
@@ -65,7 +65,7 @@ class cellFrame():  # --------------------------------------- this is each cell 
 
             addAdjCell = []
             for cell in showlist: # get adjacent cells that are not bombs BUT ARE adjacent to them and adds them to a new list
-                for addCell in adjacentCellList(self.buttonList[cell].getIndex(), self.edgeDict, self.columnY):
+                for addCell in adjacentCellList(self.buttonList[cell].getIndex(), self.__edgeDict, self.__columnY):
                     if not self.buttonList[addCell].getBombStatus():
                         if addCell not in showlist:
                             addAdjCell.append(addCell) # a new lits is used to prevent the program from checking added cells
@@ -78,8 +78,8 @@ class cellFrame():  # --------------------------------------- this is each cell 
         for cell in self.buttonList:
             if cell.getRevealed():
                 revealedCount = revealedCount + 1
-        if revealedCount == len(self.buttonList) - self.bombCount:
-            end(self.window, self.buttonList, True)
+        if revealedCount == len(self.buttonList) - self.__bombCount:
+            end(self.__window, self.buttonList, True)
 
 
     # set
@@ -102,7 +102,7 @@ class cellFrame():  # --------------------------------------- this is each cell 
         return self.isBomb
 
     def getButton(self):
-        return self.button
+        return self.__button
 
     def getIndex(self):
         return self.thisCellIndex
@@ -111,7 +111,7 @@ class cellFrame():  # --------------------------------------- this is each cell 
         return  self.adjacentBombs
 
     def getCellFrame(self):
-        return self.frame
+        return self.__frame
 
     def getRevealed(self):
         return self.revealed
