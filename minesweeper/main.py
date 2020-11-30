@@ -339,11 +339,11 @@ def customGame():
     bombsEntry = tk.Entry(lineThree)
     bombsEntry.pack(side="left")
 
-    submitButton = tk.Button(lineFour, text="Submit", command=lambda: startCustomGame(widthEntry.get(),heightEntry.get(),bombsEntry.get()))
+    submitButton = tk.Button(lineFour, text="Submit", command=lambda: startCustomGame(widthEntry.get(),heightEntry.get(),bombsEntry.get(),customEntryWindow))
     submitButton.pack(side="left")
     cancelButton = tk.Button(lineFour, text="Cancel", command=lambda: cancelCustom(customEntryWindow))
     cancelButton.pack(side="left")
-    customEntryWindow.bind("<Return>", lambda e: startCustomGame(widthEntry.get(),heightEntry.get(),bombsEntry.get()))
+    customEntryWindow.bind("<Return>", lambda e: startCustomGame(widthEntry.get(),heightEntry.get(),bombsEntry.get(),customEntryWindow))
 
 
 # -------------------------------------------------------- Close window functions ------------------------------------------
@@ -459,7 +459,7 @@ def tryFlag(rawString, buttonList):  # .!toplevel###.!frame2.!frame###.!button
                 buttonList[int(phase2[0]) - 1].flagCell()
 
 
-def startCustomGame(xRaw, yRaw, bombsRaw):
+def startCustomGame(xRaw, yRaw, bombsRaw,customEntryWindow):
     x = None
     y = None
     q1 = False
@@ -490,6 +490,7 @@ def startCustomGame(xRaw, yRaw, bombsRaw):
             tkinter.messagebox.showerror("To Many Bombs", "If this field generated all cells would be bombs.\n\nTry making the field larger or decreasing the number of bombs.")
         if q1 and q2:
             createGameWindow(x,y,bombs)
+            customEntryWindow.destroy()
 
 def checkFlags(buttonList):
     correctFlags = 0
